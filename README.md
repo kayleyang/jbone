@@ -1,18 +1,27 @@
 # 概述
 ## jbone定位
-### 对企业
-jbone采用微服务架构，为中小企业提供系统管理、内容管理、电商平台等解决方案。使中小企业花最少的成本建立自己的电商平台、企业管理平台、支付平台等。
-jbone功能包括服务管理、系统管理平台、内容管理平台、电商平台、支付平台、工作流平台等子系统。
-### 对开发
-jbone为企业提供解决方案的同时，更重视对前沿技术的学习和探索；jbone使用spring cloud生态体系技术，采用微服务架构，为企业微服务架构提供一种解决方案，供开发人员学习和交流。
-其中包括服务注册与发现、服务监控、服务管理、服务治理、服务网关、服务熔断等常见微服务组件。
-## 技术交流
+### 学习交流
+随着微服务的发展，出现了很多微服务架构的解决方案，Spring Cloud就是其中的典型代表。jbone是基于Spring Cloud搭建的微服务项目，包括服务注册与发现、服务监控、服务管理、服务网关、服务熔断等常见微服务组件。
+除Spring Cloud以外，会根据业务特点选择合适的解决方案，如单点登录的CAS、安全框架Shiro等。具体参考《技术选型》。
+
+jbone项目主要关注两个方面的技术交流：
+* 功能实现：为技术选型相同的项目，提供实现参考。
+* 技术探究：jbone在实现功能的同时，会针对选择的技术框架进行深入探究，使用的同时获得技术提升；出现问题能尽快的定位问题。知道How to use,更要知道How it works。（**技术探究文章在末尾**）
+### 造轮子
+造轮子的成本非常高，企业快速的业务发展，更想拿来即用。jbone在技术交流的过程中会沉淀出很多轮子，如服务治理、系统管理、内容管理、电商平台等解决方案。使中小企业花最少的成本建立自己的服务治理体系、电商平台、企业管理平台、支付平台等。
+## 交流方式
 QQ群：547104190
+
+公众号：writebugs
+
+作者QQ：417511458
+
+作者微信：dreamming_now
+
 # 系统设计
 ## jbone功能架构图
 ![Jbone功能架构图](doc/images/功能架构图.png)
-## jbone物理结构图
-![Jbone物理架构图](doc/images/物理架构图.png)
+
 ## 项目模块划分
 * jbone-cas : 用户单点登录模块
     * jbone-cas-client：客户端jar包，用于集成到需要CAS授权的系统
@@ -25,7 +34,7 @@ QQ群：547104190
 * jbone-sys : 系统管理模块
     * jbone-sys-admin ： 系统管理后台
     * jbone-sys-api : 系统服务对外接口定义
-    * jbone-sys-api-feign : 基于Spring Cloud Feign的调用实现
+    * jbone-sys-api-starter : 基于Spring Cloud Feign的调用实现
     * jbone-sys-core : 系统管理核心
     * jbone-sys-server : 系统管理服务
 * jbone-tag ：全平台标签系统
@@ -37,8 +46,7 @@ QQ群：547104190
 * jbone-pay : 支付平台模块
 * jbone-im : 即时通信模块
 * jbone-ui : 以webjars形式管理前端静态资源，所有包含页面的工程需要依赖此模块。
-## 电商平台
-![电商平台](doc/images/电商功能架构图.png)
+
 ## 非功能设计
 ### 可用性
 HA >=99.99%（无任何单点问题，对单点故障零容忍）
@@ -74,6 +82,8 @@ Thymeleaf | 模板引擎  | [http://www.thymeleaf.org/](http://www.thymeleaf.org
 Maven | 项目构建管理  | [http://maven.apache.org/](http://maven.apache.org/)
 Redis | 分布式缓存数据库 | [https://redis.io/](https://redis.io/)
 Mysql | 对象关系数据库 | [https://www.mysql.com/](https://www.mysql.com/)
+
+# 功能预览
 ## Jbone CAS(认证中心)
 ### 实现方式
 服务采用Apereo CAS作为登录认证中心，底层集成Shiro，通过Spring Cloud Feign声明式调用权限数据，完成用户授权。
@@ -118,9 +128,7 @@ Mysql | 对象关系数据库 | [https://www.mysql.com/](https://www.mysql.com/)
 ![菜单管理](doc/images/menuManager.png)
 ### 权限管理
 ![权限管理](doc/images/permissionManager.png)
-## jbone功能和进度表
-![进度](doc/images/jboneProcess.png)
-# jbone部署说明
+# jbone部署说明(默认HTTP)
 ## 下载代码
 将代码clone下来并导入idea或eclipse；
 ## 创建数据库
@@ -153,101 +161,22 @@ Mysql | 对象关系数据库 | [https://www.mysql.com/](https://www.mysql.com/)
 127.0.0.1 jbone-bpm-server.majunwei.com
 ```
 
-## 配置CAS证书
-
-### 配置方式一
-
-1、生成证书
-sudo keytool -genkey -alias jbonekeystore -keyalg RSA -keystore /etc/cas/jbonekeystore
-
-注意：要把jbone-cas.majunwei.com填进去；
-
-输入口令：123456
-
-2、导出证书
-
-sudo keytool -export -file /etc/cas/jbonekeystore.crt -alias jbonekeystore -keystore /etc/cas/jbonekeystore
-
-注意：这里输入到是上面设置的密码：123456
-
-3、导入证书到本地JDK（客户端认证）
-
-sudo keytool -import -keystore /Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/security/cacerts -file /etc/cas/jbonekeystore.crt -alias jbonekeystore
-
-注意：
-
-1、这里要找到自己的JDK位置
-
-2、这里的密码输入changeit，信任证书
-
-常见错误：
-
-keytool 错误: java.io.IOException: Keystore was tampered with, or password was incorrect
-
-原因：
-
-输入密码的时候输入changeit
-
-4、配置tomcat SSL
-
-找到server.xml中配置SSL的位置，填写如下内容：
-```xml
-<Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol" SSLEnabled="true"
-               maxThreads="150" scheme="https" secure="true"
-               clientAuth="false" sslProtocol="TLS"
-               keystoreFile="/etc/cas/jbonekeystore"
-               keystorePass="123456" />
-```
-
-注意：这里是tomcat8，其他版本的配置方式可能不同，主要表现在protocol属性上。
-
-5、将jbone-cas-server添加到tomcat中，可使用idea部署，或单独启动tomcat部署
-
-常见问题：
-
-Open quote is expected for attribute "keystorePass" associated with an  element type  "Connector".
-
-原因有可能是配置的属性符号问题，比如中文的引号
-
-### 配置方式二：
-
-为了方便开发人员配置证书，我们提供了脚本形式的部署。
-
-- bat脚本： [gencertCasKey.bat](/jbone-cas/jbone-cas-server/src/main/resources/gencertCasKey.bat)
-- shell脚本： gencertCasKey.sh 待写
-
-进入到脚本所在路径：
-> jbone/jbone-cas/jbone-cas-server/src/main/resources/
-
-找到 `gencertCasKey.bat` 或 `gencertCasKey.sh`
-
-替换脚本中本地JDK密钥库路径
-
-```sh
-:: "设置JDK密钥库路径"
-set keystoreJDKPath="C:\devSpace\Java\jdk1.8.0_131\jre\lib\security\cacerts "
-```
-
-然后执行脚本，根据提示操作即可完成导入。
-
 ## 启动应用
 依次启动：
 
-1. jbone-sm-register
+1. jbone-sm-register（必启）
 
-2. jbone-sm-admin
+2. jbone-sys-server（必启）
 
-3. jbone-sys-server
+3. jbone-cas-server（必启）
 
-4. jbone-sys-admin
+4. jbone-sys-admin（系统管理）
 
-5. jbone-cas-server (支持两种部署方式)
+5. jbone-sm-admin （服务管理）
 
-> 单独部署方式：在tomcat单独部署（https端口号8443）
+6. jbone-sm-monitor （服务调用链）
 
-> SpringBootApp方式：将 `jbonekeystore` 放入 `resources` 目录下，直接运行 `CasWebApplication` 主程序
-
-6. jbone-cas-manager(tomcat中运行,http端口号30002)
+6. jbone-cas-manager （CAS系统管理）
 
 ## 进入系统
 
@@ -255,17 +184,19 @@ set keystoreJDKPath="C:\devSpace\Java\jdk1.8.0_131\jre\lib\security\cacerts "
  ---- | ------ 
  系统管理 | http://jbone-sys-admin.majunwei.com:20002/ |
  服务管理 | http://jbone-sm-admin.majunwei.com:10002/ |
- 调用链 | http://jbone-sm-monitor.majunwei.com:10003/ |
+ 服务调用链 | http://jbone-sm-monitor.majunwei.com:10003/ |
  CAS系统管理 | http://jbone-cas-manager.majunwei.com:30002/ |
 
 默认用户名密码：jbone/jbone
 
-# 关键开源技术介绍
-## Spring Boot架构图
-![Spring Boot架构图](doc/images/diagram-boot-reactor.png)
-## Spring Cloud架构图
-![Spring Cloud架构图](doc/images/diagram-distributed-systems.png)
-## Spring Cloud学习资料
+## [https配置方式](doc/https部署.md)
+
+
+# 技术探究
+
+## Spring Cloud篇
+[Eureka实现原理（推荐）](https://mp.weixin.qq.com/s/AhRYd0Iwrxb_nsN4F9E9DQ)
+
 [深入理解Spring Cloud - Spring Cloud Netflix Eureka](http://majunwei.com/view/201808130810451238.html)
 
 [深入理解Eureka-Eureka架构综述](http://www.majunwei.com/view/201808130819216747.html)
@@ -291,8 +222,17 @@ set keystoreJDKPath="C:\devSpace\Java\jdk1.8.0_131\jre\lib\security\cacerts "
 [深入理解Eureka-Eureka Region Zone](http://www.majunwei.com/view/201808130953353185.html)
 
 [深入理解Eureka-Eureka配置列表](http://www.majunwei.com/view/201808130827002632.html)
-## CAS认证过程
-![CAS认证过程](doc/images/cas_protocol.jpg)
+
+## CAS 篇
+
+[Spring Web Flow - Web流程实现利器](https://mp.weixin.qq.com/s/dDCIdSRW6otFopvS1DDG9g)
+
+[深入理解CAS - CAS票据](http://majunwei.com/view/201807171040041163.html)
+
+[CAS认证和注销过程](http://majunwei.com/view/201807122100410471.html)
+
+[使用spring-boot-admin监控CAS服务](http://majunwei.com/view/201808080954075692.html)
+
 
 
 
