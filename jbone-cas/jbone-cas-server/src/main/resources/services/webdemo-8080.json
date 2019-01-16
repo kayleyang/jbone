@@ -1,0 +1,10 @@
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "^http://web-demo.majunwei.com:8080/cas",
+  "name" : "web-demo",
+  "id" : 8080,
+  "description" : "web demo",
+  "evaluationOrder" : 5,
+  "logoutType" : "BACK_CHANNEL",
+  "logoutUrl" : "http://web-demo.majunwei.com:8080/casLogout"
+}
